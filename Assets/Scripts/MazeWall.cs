@@ -1,27 +1,14 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
-public class MazeWall
+public class MazeWall : MonoBehaviour
 {
-    private bool _isActive;
-    private int _wallIndex;
-    public enum WallDirection
+    [NonSerialized]
+    public bool isActive;
+    
+    public void InitMazeWall(int index)
     {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT,
-        COUNT
-    }
-    public MazeWall(int index)
-    {
-        _isActive = true;
-        _wallIndex = index;
-        UpdateWallPos();
-    }
-
-    private void UpdateWallPos()
-    {
-        
+        isActive = true;
     }
 
 }

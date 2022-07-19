@@ -134,7 +134,7 @@ GameObject:
   - component: {fileID: 355962455}
   - component: {fileID: 355962456}
   m_Layer: 0
-  m_Name: MazeBlock
+  m_Name: MazeGenerate
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -168,9 +168,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MazeBlock: {fileID: 275506659047963749, guid: 35b91e0934422b740880ea98e2bd83d8, type: 3}
-  MazeWall: {fileID: 155590703559188268, guid: 64f206fdbd6a3fa48b1c3f3f0c278266, type: 3}
-  MazeTotalBlockX: 20
-  MazeTotalBlockY: 20
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,25 +1,32 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class MazeBlock : MonoBehaviour
 {
+    public GameObject[] Walls;
+    
+    [NonSerialized]
     public bool IsVisited;
-    public MazeWall[] Walls;
+    
+    [NonSerialized]
+    public MazeBlock[] Neighbours = new MazeBlock[MazeConfig.DirectionCount];
 
-    private int _blockIndex;
+    [NonSerialized]
+    public int BlockIndex;
 
     public void InitMazeBlock(int blockIndex)
     {
         IsVisited = false;
-        Walls = new MazeWall[(int)MazeWall.WallDirection.COUNT];
-        _blockIndex = blockIndex;
+        BlockIndex = blockIndex;
         UpdateBlockPos();
+        MazeMgr.Instance().RegisterBlock(this);
     }
 
     private void UpdateBlockPos()
     {
-        
+        transform.position = MazeUtils.GetBlockPosByIndex(BlockIndex);
     }
-    
 }
