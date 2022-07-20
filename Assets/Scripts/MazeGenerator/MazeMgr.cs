@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -8,7 +9,7 @@ public class MazeMgr
     private static MazeMgr _instance;
     private List<MazeBlock> _mazeBlocks = new List<MazeBlock>();
     private List<MazeWall> _mazeWalls = new List<MazeWall>();
-
+    private MazeBlock _lastBlock;
     public static MazeMgr Instance()
     {
         if (_instance == null)
@@ -117,37 +118,116 @@ public class MazeMgr
     private List<int> _tempWallList = new List<int>();
     private List<int> _tempDirectionList = new List<int>();
     private List<MazeBlock> _adjustBlockList = new List<MazeBlock>();
+
+    private int _visitedBlockCount = 0;
     public void Prepare()
     {
         //int startPos = Random.Range(0, _mazeBlocks.Count);
         _adjustBlockList.Add(_mazeBlocks[0]);
-        ResolveNextBlockPrim();
-
+        _lastBlock = null;
+        _visitedBlockCount = 0;
     }
 
-    // public bool ResolveNextBlockDepthFirst()
-    // {
-    //     _tempDirectionList.Clear();
-    //     if (_adjustBlockList.Count > 0)
-    //     {
-    //         var current = _adjustBlockList[_adjustBlockList.Count - 1];
-    //         MarkVisitedBlock(current);
-    //         for (int direction = 0; direction < MazeConfig.DirectionCount; direction++)
-    //         {
-    //             if (current.NeighbourBlocks[direction] != null && !current.NeighbourBlocks[direction].IsVisited)
-    //             {
-    //                 MarkVisitedBlock(current.NeighbourBlocks[direction]);
-    //                 //_tempDirectionList.Add(o);
-    //             }
-    //         }
-    //     }
-    // }
+    public bool ResolveNextBlock(MazeConfig.AlgorithmName algorithm)
+    {
+        switch (algorithm)
+        {
+            case MazeConfig.AlgorithmName.Prim:
+                return ResolveNextBlockPrim();
+            case MazeConfig.AlgorithmName.DepthFirst:
+                return ResolveNextBlockDepthFirst();
+            case MazeConfig.AlgorithmName.AldousBroder:
+                return ResolveNextBlockAldousBroder();
+                
+        }
 
-    
+        return false;
+    }
+
+    public bool ResolveNextBlockAldousBroder()
+    {
+        _tempDirectionList.Clear();
+        MarkVisitedBlock(_lastBlock);
+        if (_visitedBlockCount < MazeConfig.MazeTotalBlock)
+        {
+            var currentBlock = _adjustBlockList[0];
+            _lastBlock = currentBlock;
+            if (!currentBlock.IsVisited)
+            {
+                _visitedBlockCount++;
+            }
+            MarkVisitingBlock(currentBlock);
+            for (int direction = 0; direction < MazeConfig.DirectionCount; direction++)
+            {
+                if (currentBlock.NeighbourBlocks[direction] != null)
+                {
+                    _tempDirectionList.Add(direction);
+                }
+                
+            }
+
+            int nextDirection = _tempDirectionList[Random.Range(0, _tempDirectionList.Count)];
+            _adjustBlockList[0] = currentBlock.NeighbourBlocks[nextDirection];
+
+            if (!_adjustBlockList[0].IsVisited)
+            {
+                currentBlock.Walls[nextDirection].gameObject.SetActive(false);
+            }
+
+            return true;
+        }
+        return false;
+    }
+
+    public bool ResolveNextBlockDepthFirst()
+    {
+        _tempDirectionList.Clear();
+        MarkVisitedBlock(_lastBlock);
+        
+        Debug.Log("Adjust block : " + _adjustBlockList.Count);
+        
+        if (_adjustBlockList.Count > 0)
+        {
+            
+            var current = _adjustBlockList[^1];
+            _lastBlock = current;
+            MarkVisitingBlock(current);
+            for (int direction = 0; direction < MazeConfig.DirectionCount; direction++)
+            {
+                if (current.NeighbourBlocks[direction] != null && !current.NeighbourBlocks[direction].IsVisited)
+                {
+                    MarkCandidateBlock(current.NeighbourBlocks[direction]);
+                    _tempDirectionList.Add(direction);
+                }
+            }
+
+            if (_tempDirectionList.Count > 0)
+            {
+                var nextBlock = Random.Range(0, _tempDirectionList.Count);
+                _adjustBlockList.Add(current.NeighbourBlocks[_tempDirectionList[nextBlock]]);
+                current.Walls[_tempDirectionList[nextBlock]].gameObject.SetActive(false);
+            }
+            else
+            {
+                while (_adjustBlockList.Count > 0 && _adjustBlockList[^1].IsAllNeighbourVisited())
+                {
+                    _adjustBlockList.RemoveAt(_adjustBlockList.Count - 1);
+                }
+                
+            }
+            
+
+            return true;
+        }
+
+        return false;
+    }
+
+
     public bool ResolveNextBlockPrim()
     {
         _tempDirectionList.Clear();
-
+        MarkVisitedBlock(_lastBlock);
         if (_adjustBlockList.Count == 0)
         {
             return false;
@@ -175,7 +255,9 @@ public class MazeMgr
             var wallDirection = _tempDirectionList[Random.Range(0, _tempDirectionList.Count)];
             block.Walls[wallDirection].gameObject.SetActive(false);
         }
-        MarkVisitedBlock(block);
+
+        _lastBlock = block;
+        MarkVisitingBlock(block);
         
         //Debug.Log(_adjustBlockList.Count);
         return true;
@@ -183,12 +265,24 @@ public class MazeMgr
 
     private void MarkCandidateBlock(MazeBlock block)
     {
+        if (block == null)
+            return;
         block.gameObject.GetComponent<Renderer>().material.color = Color.yellow;
+    }
+
+    private void MarkVisitingBlock(MazeBlock block)
+    {
+        if (block == null)
+            return;
+        block.gameObject.GetComponent<Renderer>().material.color = Color.red;
+        block.IsVisited = true;
     }
 
     private void MarkVisitedBlock(MazeBlock block)
     {
-        block.gameObject.GetComponent<Renderer>().material.color = Color.red;
+        if (block == null)
+            return;
+        block.gameObject.GetComponent<Renderer>().material.color = Color.cyan;
         block.IsVisited = true;
     }
 

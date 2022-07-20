@@ -29,4 +29,11 @@
     
     public const float  WallBaseX = -(MazeTotalBlockX * MazeBlockSizeX / 2.0f);
     public const float  WallBaseY = (MazeTotalBlockY * MazeBlockSizeY / 2.0f);
+    
+    public enum AlgorithmName
+    {
+        Prim,
+        DepthFirst,
+        AldousBroder 
+    }
 }
