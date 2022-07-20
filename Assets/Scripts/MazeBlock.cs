@@ -6,15 +6,12 @@ using Random = UnityEngine.Random;
 
 public class MazeBlock : MonoBehaviour
 {
-    public GameObject[] Walls;
+    public MazeWall[] Walls = new MazeWall[MazeConfig.DirectionCount];
+    public MazeBlock[] NeighbourBlocks = new MazeBlock[MazeConfig.DirectionCount];
     
     [NonSerialized]
     public bool IsVisited;
     
-    [NonSerialized]
-    public MazeBlock[] Neighbours = new MazeBlock[MazeConfig.DirectionCount];
-
-    [NonSerialized]
     public int BlockIndex;
 
     public void InitMazeBlock(int blockIndex)
