@@ -2,13 +2,14 @@ using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class MazeGenerator : MonoBehaviour
 {
     
     public GameObject MazeBlock;
     public GameObject MazeWall;
-    public MazeConfig.AlgorithmName Algorithm;
+    [FormerlySerializedAs("Algorithm")] public MazeConfig.GenerateAlgorithmName generateAlgorithm;
     public int Speed;
 
     private bool _isAutoGenerate = false;
@@ -46,7 +47,7 @@ public class MazeGenerator : MonoBehaviour
         {
             if (_isAutoGenerate && (count++ % Speed == 0))
             {
-                isContinue = MazeMgr.Instance().ResolveNextBlock(Algorithm);
+                isContinue = MazeMgr.Instance().ResolveNextBlock(generateAlgorithm);
             }
 
             yield return null;
@@ -60,12 +61,13 @@ public class MazeGenerator : MonoBehaviour
         MazeMgr.Instance().InitBlockNeighbours();
         MazeMgr.Instance().LinkWallsAndBlocks();
         MazeMgr.Instance().Prepare();
+        SolverMgr.Instance().Prepare();
         StartCoroutine(DoGenerateMazeStep());
     }
 
 
     public void ResolveNextBlock()
     {
-        MazeMgr.Instance().ResolveNextBlock(Algorithm);
+        MazeMgr.Instance().ResolveNextBlock(generateAlgorithm);
     }
 }

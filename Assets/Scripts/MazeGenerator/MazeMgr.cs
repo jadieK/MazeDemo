@@ -34,6 +34,11 @@ public class MazeMgr
         _mazeWalls.Add(wall);
     }
 
+    public List<MazeBlock> GetMaze()
+    {
+        return _mazeBlocks;
+    }
+
     public void LinkWallsAndBlocks()
     {
         for (int wallIndex = 0; wallIndex < MazeConfig.MazeTotalBlockX * (MazeConfig.MazeTotalBlockY + 1); wallIndex++)
@@ -128,15 +133,15 @@ public class MazeMgr
         _visitedBlockCount = 0;
     }
 
-    public bool ResolveNextBlock(MazeConfig.AlgorithmName algorithm)
+    public bool ResolveNextBlock(MazeConfig.GenerateAlgorithmName generateAlgorithm)
     {
-        switch (algorithm)
+        switch (generateAlgorithm)
         {
-            case MazeConfig.AlgorithmName.Prim:
+            case MazeConfig.GenerateAlgorithmName.Prim:
                 return ResolveNextBlockPrim();
-            case MazeConfig.AlgorithmName.DepthFirst:
+            case MazeConfig.GenerateAlgorithmName.DepthFirst:
                 return ResolveNextBlockDepthFirst();
-            case MazeConfig.AlgorithmName.AldousBroder:
+            case MazeConfig.GenerateAlgorithmName.AldousBroder:
                 return ResolveNextBlockAldousBroder();
                 
         }
