@@ -11,6 +11,8 @@ public class MazeBlock : MonoBehaviour
     
     [NonSerialized]
     public bool IsVisited;
+
+    [NonSerialized] public bool IsSolved = false;
     
     public int BlockIndex;
 

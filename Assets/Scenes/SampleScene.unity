@@ -344,7 +344,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MazeBlock: {fileID: 275506659047963749, guid: 35b91e0934422b740880ea98e2bd83d8, type: 3}
   MazeWall: {fileID: 155590703559188268, guid: 64f206fdbd6a3fa48b1c3f3f0c278266, type: 3}
-  generateAlgorithm: 1
+  generateAlgorithm: 0
   Speed: 1
 --- !u!1 &368932420
 GameObject:
@@ -1325,6 +1325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4c3456c9aa80e14bb6c8e22ddb30b40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  solveAlgorithmName: 1
 --- !u!4 &1397982802
 Transform:
   m_ObjectHideFlags: 0
